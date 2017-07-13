@@ -69,7 +69,7 @@ public class UMPlugin extends CordovaPlugin {
         if (action.equals("init")) {
             String appKey = args.getString(0);
             String channelId = args.getString(1);
-            if(channelId == "test"){
+            if(channelId.equals("test")){
                 startWithConfigure(new UMAnalyticsConfig(mContext, appKey, channelId));
             }else{
                 startWithConfigure(new UMAnalyticsConfig(mContext, appKey, ChannelUtil.getChannel(mContext)));
