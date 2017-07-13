@@ -39,11 +39,6 @@
                 <param name="android-package" value="com.youbanban.app.UMPlugin"/>
             </feature>
         </config-file>
-        <config-file target="AndroidManifest.xml"  parent="application">
-            <!-- appkey -->
-            <meta-data android:name="UMENG_APPKEY" android:value="595a50f1f29d987134000ca7" />
-            <meta-data android:name="UMENG_CHANNEL" android:value="channel_youbanban"/>
-        </config-file>
         <config-file target="AndroidManifest.xml"  parent="/manifest">
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

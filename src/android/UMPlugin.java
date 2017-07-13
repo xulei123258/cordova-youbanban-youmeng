@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.analytics.MobclickAgent.EScenarioType;
 import com.umeng.analytics.MobclickAgent.UMAnalyticsConfig;
@@ -21,6 +22,9 @@ import com.umeng.analytics.game.UMGameAgent;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
+import static com.umeng.analytics.MobclickAgent.*;
 
 public class UMPlugin extends CordovaPlugin {
     private Context mContext = null;
@@ -35,7 +39,7 @@ public class UMPlugin extends CordovaPlugin {
     private void initGame() {
         UMGameAgent.init(mContext);
         UMGameAgent.setPlayerLevel(1);
-        MobclickAgent.setScenarioType(mContext, EScenarioType.E_UM_GAME);
+        setScenarioType(mContext, EScenarioType.E_UM_GAME);
         isGameInited = true;
     }
 
@@ -65,9 +69,15 @@ public class UMPlugin extends CordovaPlugin {
         if (action.equals("init")) {
             String appKey = args.getString(0);
             String channelId = args.getString(1);
-            MobclickAgent.startWithConfigure(new UMAnalyticsConfig(mContext, appKey, channelId));
-            MobclickAgent.setScenarioType(mContext, EScenarioType.E_UM_NORMAL);
+            if(channelId == "test"){
+                startWithConfigure(new UMAnalyticsConfig(mContext, appKey, channelId));
+            }else{
+                startWithConfigure(new UMAnalyticsConfig(mContext, appKey, ChannelUtil.getChannel(mContext)));
+            }
+            setScenarioType(mContext, EScenarioType.E_UM_NORMAL);
             MobclickAgent.onResume(mContext);
+
+
             return true;
         } else if (action.equals("onCCEvent")) {
             JSONArray array = args.getJSONArray(0);
@@ -77,16 +87,16 @@ public class UMPlugin extends CordovaPlugin {
             }
             int value = args.getInt(1);
             String label = args.getString(2);
-            MobclickAgent.onEvent(mContext, ck, value, label);
+            onEvent(mContext, ck, value, label);
             return true;
         } else if (action.equals("onEvent")) {
             String eventId = args.getString(0);
-            MobclickAgent.onEvent(mContext, eventId);
+            onEvent(mContext, eventId);
             return true;
         } else if (action.equals("onEventWithLabel")) {
             String eventId = args.getString(0);
             String label = args.getString(1);
-            MobclickAgent.onEvent(mContext, eventId, label);
+            onEvent(mContext, eventId, label);
             return true;
         } else if (action.equals("onEventWithParameters")) {
             String eventId = args.getString(0);
@@ -104,7 +114,7 @@ public class UMPlugin extends CordovaPlugin {
                     map.put(key, strValue);
                 }
             }
-            MobclickAgent.onEvent(mContext, eventId, map);
+            onEvent(mContext, eventId, map);
             return true;
         } else if (action.equals("onEventWithCounter")) {
             String eventId = args.getString(0);
@@ -123,15 +133,15 @@ public class UMPlugin extends CordovaPlugin {
                 }
             }
             int value = args.getInt(2);
-            MobclickAgent.onEventValue(mContext, eventId, map, value);
+            onEventValue(mContext, eventId, map, value);
             return true;
         } else if (action.equals("onPageBegin")) {
             String pageName = args.getString(0);
-            MobclickAgent.onPageStart(pageName);
+            onPageStart(pageName);
             return true;
         } else if (action.equals("onPageEnd")) {
             String pageName = args.getString(0);
-            MobclickAgent.onPageEnd(pageName);
+            onPageEnd(pageName);
             return true;
         } else if (action.equals("getDeviceId")) {
             try {
@@ -145,19 +155,19 @@ public class UMPlugin extends CordovaPlugin {
             return true;
         } else if (action.equals("setLogEnabled")) {
             boolean enabled = args.getBoolean(0);
-            MobclickAgent.setDebugMode(enabled);
+            setDebugMode(enabled);
             return true;
         } else if (action.equals("profileSignInWithPUID")) {
             String puid = args.getString(0);
-            MobclickAgent.onProfileSignIn(puid);
+            onProfileSignIn(puid);
             return true;
         } else if (action.equals("profileSignInWithPUIDWithProvider")) {
             String puid = args.getString(0);
             String provider = args.getString(1);
-            MobclickAgent.onProfileSignIn(puid, provider);
+            onProfileSignIn(puid, provider);
             return true;
         } else if (action.equals("profileSignOff")) {
-            MobclickAgent.onProfileSignOff();
+            onProfileSignOff();
             return true;
         } else if (action.equals("setUserLevelId")) {
             if (!isGameInited) {
