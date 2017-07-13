@@ -76,8 +76,6 @@ public class UMPlugin extends CordovaPlugin {
             }
             setScenarioType(mContext, EScenarioType.E_UM_NORMAL);
             MobclickAgent.onResume(mContext);
-
-
             return true;
         } else if (action.equals("onCCEvent")) {
             JSONArray array = args.getJSONArray(0);
